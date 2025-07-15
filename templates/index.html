@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <title>Багш ChatBot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            background: #f9f9f9;
+        }
+        #chatbox {
+            border: 1px solid #ccc;
+            background: #fff;
+            padding: 10px;
+            height: 350px;
+            overflow-y: scroll;
+        }
+        .message {
+            margin: 10px 0;
+        }
+        .user { color: blue; }
+        .bot { color: green; }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧑‍🏫 Багш ChatBot</h1>
+    <div id="chatbox">
+        <div class="message bot">Багш: Сайн байна уу! Надад асуултаа асуугаарай.</div>
+    </div>
+    <input type="text" id="userInput" placeholder="Асуултаа бичнэ үү..." />
+    <button onclick="sendMessage()">Илгээх</button>
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById("userInput");
+            const msg = input.value;
+            if (!msg) return;
+
+            const chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += `<div class="message user">Та: ${msg}</div>`;
+            input.value = "";
+
+            fetch(`/get?msg=${encodeURIComponent(msg)}`)
+                .then(response => response.text())
+                .then(data => {
+                    chatbox.innerHTML += `<div class="message bot">Багш: ${data}</div>`;
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                });
+        }
+
+        document.getElementById("userInput")
+            .addEventListener("keydown", function (e) {
+                if (e.key === "Enter") sendMessage();
+            });
+    </script>
+</body>
+</html>
